@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+.npm-cache/
+dist/
+
+# 本地数据与临时库
+data/
+*.db

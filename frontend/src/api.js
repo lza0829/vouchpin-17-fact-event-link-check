@@ -8,7 +8,11 @@ async function req(path, opts = {}) {
   try { data = text ? JSON.parse(text) : null } catch { data = text }
   if (!r.ok) {
     const detail = (data && data.detail) || text || r.statusText
-    throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail))
+    const message = typeof detail === 'string' ? detail : (detail.message || JSON.stringify(detail))
+    const err = new Error(message)
+    err.status = r.status
+    err.payload = typeof detail === 'object' ? detail : null
+    throw err
   }
   return data
 }
@@ -22,6 +26,12 @@ export const api = {
   preview: (day) => req('/redeem/preview' + (day ? `?business_day=${encodeURIComponent(day)}` : '')),
   seal: (body) => req('/redeem/seal', { method: 'POST', body: JSON.stringify(body) }),
   batches: () => req('/batches'),
+  batchDetail: (id) => req(`/batches/${id}`),
+  chainBreaks: () => req('/chain/breaks'),
+  chainRuns: () => req('/chain/runs'),
+  chainRun: (id) => req(`/chain/runs/${id}`),
   getDay: () => req('/settings/day'),
   setDay: (business_day) => req('/settings/day', { method: 'PUT', body: JSON.stringify({ business_day }) }),
+  getChainPolicy: () => req('/settings/chain-policy'),
+  setChainPolicy: (policy) => req('/settings/chain-policy', { method: 'PUT', body: JSON.stringify({ policy }) }),
 }

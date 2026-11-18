@@ -124,6 +124,36 @@ button.ghost {
 }
 .tag.ok { background: rgba(47, 143, 107, 0.12); color: var(--ok); }
 .tag.warn { background: rgba(196, 59, 122, 0.12); color: var(--ticket); }
+.tag.bad-tag { background: rgba(196, 92, 92, 0.14); color: var(--bad); }
+
+button.mini { padding: 0.28rem 0.7rem; font-size: 0.78rem; }
+h4 { margin: 0.4rem 0; color: var(--navy); font-family: var(--font-display); letter-spacing: -0.01em; }
+h4.err { color: var(--bad); }
+
+.policy-line { color: var(--muted); font-size: 0.86rem; margin: 0.7rem 0 0.4rem; }
+.policy-line em { color: var(--muted); font-style: normal; }
+.chain-banner {
+  margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 0.6rem;
+  font-size: 0.88rem; border: 1px solid var(--line); background: #f3f6fa;
+}
+.chain-banner.ok { border-color: rgba(47, 143, 107, 0.4); background: rgba(47, 143, 107, 0.08); color: var(--ok); }
+.chain-banner.warn { border-color: rgba(196, 59, 122, 0.4); background: rgba(196, 59, 122, 0.07); color: var(--ticket); }
+.chain-banner.bad { border-color: rgba(196, 92, 92, 0.45); background: rgba(196, 92, 92, 0.08); color: var(--bad); }
+
+.rewrite-box { margin-top: 0.8rem; padding: 0.6rem; border: 1px dashed var(--line); border-radius: 0.6rem; }
+.detail-row > td { background: #f8fafc; }
+.detail-box { padding: 0.4rem 0.2rem; }
+
+.policy-options { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 0.6rem; }
+.policy-card {
+  display: flex; flex-direction: column; gap: 0.3rem; padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line); border-radius: 0.75rem; cursor: pointer;
+  background: linear-gradient(180deg, #fbfcfe, #f3f6fa); color: var(--ink-soft);
+}
+.policy-card input { min-width: 0; width: auto; }
+.policy-card.on { border-color: var(--ticket); box-shadow: 0 0 0 1px var(--ticket) inset; }
+.policy-name { font-weight: 700; color: var(--navy); font-family: var(--font-display); }
+.policy-desc { font-size: 0.8rem; color: var(--muted); }
 
 @media (max-width: 720px) {
   .chip { min-width: 0; flex: 1 1 40%; border-radius: 0.75rem; }

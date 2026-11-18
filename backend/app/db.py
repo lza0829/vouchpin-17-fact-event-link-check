@@ -42,7 +42,46 @@ CREATE TABLE IF NOT EXISTS redeem_batches (
   fact_count INTEGER NOT NULL DEFAULT 0,
   total_amount REAL NOT NULL DEFAULT 0,
   sealed_at TEXT,
-  note TEXT NOT NULL DEFAULT ''
+  note TEXT NOT NULL DEFAULT '',
+  check_run_id INTEGER
+);
+CREATE TABLE IF NOT EXISTS chain_check_runs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_day TEXT NOT NULL,
+  policy TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  fact_count INTEGER NOT NULL DEFAULT 0,
+  break_count INTEGER NOT NULL DEFAULT 0,
+  rewrite_count INTEGER NOT NULL DEFAULT 0,
+  message TEXT NOT NULL DEFAULT '',
+  batch_id INTEGER,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS chain_breaks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id INTEGER NOT NULL,
+  fact_id INTEGER NOT NULL,
+  event_id INTEGER,
+  coupon_code TEXT NOT NULL DEFAULT '',
+  reason TEXT NOT NULL,
+  detail TEXT NOT NULL DEFAULT '',
+  fact_snapshot TEXT NOT NULL DEFAULT '{}',
+  event_snapshot TEXT NOT NULL DEFAULT '{}',
+  resolved INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS fact_rewrite_audit (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id INTEGER NOT NULL,
+  fact_id INTEGER NOT NULL,
+  event_id INTEGER NOT NULL,
+  amount_old REAL,
+  amount_new REAL,
+  business_day_old TEXT,
+  business_day_new TEXT,
+  event_id_old INTEGER,
+  event_id_new INTEGER,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 '''
 
@@ -55,10 +94,18 @@ def connect(immediate: bool = False) -> sqlite3.Connection:
     return conn
 
 
+def _migrate(conn: sqlite3.Connection) -> None:
+    """补老库缺失的列（新建库由 SCHEMA 直接覆盖）。"""
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(redeem_batches)").fetchall()}
+    if cols and "check_run_id" not in cols:
+        conn.execute("ALTER TABLE redeem_batches ADD COLUMN check_run_id INTEGER")
+
+
 def init_db() -> None:
     conn = connect()
     try:
         conn.executescript(SCHEMA)
+        _migrate(conn)
         conn.commit()
     finally:
         conn.close()

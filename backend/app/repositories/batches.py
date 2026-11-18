@@ -7,6 +7,11 @@ def list_batches(conn: sqlite3.Connection) -> list[dict[str, Any]]:
     return [dict(r) for r in conn.execute("SELECT * FROM redeem_batches ORDER BY id DESC").fetchall()]
 
 
+def get_batch(conn: sqlite3.Connection, batch_id: int) -> dict[str, Any] | None:
+    row = conn.execute("SELECT * FROM redeem_batches WHERE id=?", (int(batch_id),)).fetchone()
+    return dict(row) if row else None
+
+
 def create_batch(conn: sqlite3.Connection, **fields: Any) -> int:
     cur = conn.execute(
         "INSERT INTO redeem_batches(business_day, status, fact_count, total_amount, sealed_at, note) VALUES(?,?,?,?,?,?)",

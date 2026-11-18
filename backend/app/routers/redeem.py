@@ -24,3 +24,23 @@ def seal(body: dict[str, Any]):
 @router.get("/batches")
 def batches():
     return svc.list_batches()
+
+
+@router.get("/batches/{batch_id}")
+def batch_detail(batch_id: int):
+    return svc.batch_detail(batch_id)
+
+
+@router.get("/chain/breaks")
+def chain_breaks():
+    return svc.list_chain_breaks()
+
+
+@router.get("/chain/runs")
+def chain_runs():
+    return svc.list_chain_runs()
+
+
+@router.get("/chain/runs/{run_id}")
+def chain_run(run_id: int):
+    return svc.chain_run_detail(run_id)
